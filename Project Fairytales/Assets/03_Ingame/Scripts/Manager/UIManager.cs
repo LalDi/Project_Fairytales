@@ -28,9 +28,6 @@ public class UIManager : MonoBehaviour
     public Button[] MovePoint = new Button[4]; // Left, Top, Right, Bottom
     public Button BossMovePoint;
 
-    public delegate void ClearMap();
-    public static event ClearMap OnClearMap;
-
 
     public void ClickPause()
     {
@@ -108,21 +105,15 @@ public class UIManager : MonoBehaviour
 
     public void OnMovePoint()
     {
-        if (GameStageManager.Instance.CheckMove("Left"))
-            if (!MovePoint[0].gameObject.activeSelf)
-                MovePoint[0].gameObject.SetActive(true);
+        GameStageManager.Direction direction = 0;
 
-        if (GameStageManager.Instance.CheckMove("Top"))
-            if (!MovePoint[1].gameObject.activeSelf)
-                MovePoint[1].gameObject.SetActive(true);
-
-        if (GameStageManager.Instance.CheckMove("Right"))
-            if (!MovePoint[2].gameObject.activeSelf)
-                MovePoint[2].gameObject.SetActive(true);
-
-        if (GameStageManager.Instance.CheckMove("Bottom"))
-            if (!MovePoint[3].gameObject.activeSelf)
-                MovePoint[3].gameObject.SetActive(true);
+        for (int i = 0; i < 4; i++)
+        {
+            if (GameStageManager.Instance.CheckMove(direction))
+                if (!MovePoint[i].gameObject.activeSelf)
+                    MovePoint[i].gameObject.SetActive(true);
+            direction++;
+        }
     }
 
     public void OffMovePoint()
@@ -143,4 +134,11 @@ public class UIManager : MonoBehaviour
         BossMovePoint.gameObject.SetActive(true);
     }
 
+    public void ClickMovePoint(int num)
+    {
+        GameStageManager.Direction direction = 0;
+        direction += num;
+
+        GameStageManager.Instance.ChangeMap(direction);
+    }
 }

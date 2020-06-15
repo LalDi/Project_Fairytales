@@ -27,6 +27,8 @@ public class GameStageManager : MonoBehaviour
     public GameObject[] Enemys;
     public GameObject EnemyParent;
 
+    public enum Direction { Left, Top, Right, Bottom }
+
     public int NowEnemy;
 
     private void Awake()
@@ -67,33 +69,46 @@ public class GameStageManager : MonoBehaviour
         {
             NowMap.isClear = true;
             UIManager.Instance.OnMovePoint();
-            if (y != 0 && Maps[y - 1, x].isGoboss)
+            if (Maps[y, x].isGoboss)
                 UIManager.Instance.OnBossPoint();
         }
     }
 
-    public bool CheckMove(string direction)
+    public bool CheckMove(Direction direction)
     {
         switch (direction)
         {
-            case "Left":    if (x - 1 >= 0)     return true;    break;
-            case "Top":     if (y - 1 >= 0)     return true;    break;
-            case "Right":   if (x + 1 < Line)   return true;    break;
-            case "Bottom":  if (y + 1 < Line)   return true;    break;
+            case Direction.Left:    if (x - 1 >= 0)     if (Maps[y, x - 1].isLive)  return true;    break;
+            case Direction.Top:     if (y - 1 >= 0)     if (Maps[y - 1, x].isLive)  return true;    break;
+            case Direction.Right:   if (x + 1 < Line)   if (Maps[y, x + 1].isLive)  return true;    break;
+            case Direction.Bottom:  if (y + 1 < Line)   if (Maps[y + 1, x].isLive)  return true;    break;
         }
         return false;
     }
 
-    public void ChangeMap(int value, bool isGoX)
+    public void ChangeMap(Direction direction)
     {
-        if (isGoX)
-            x += value;
-        else
-            y += value;
-
+        switch (direction)
+        {
+            case Direction.Left:    x--;    break;
+            case Direction.Top:     y--;    break;
+            case Direction.Right:   x++;    break;
+            case Direction.Bottom:  y++;    break;
+        }
         NowMap = Maps[y, x];
-        for (int i = 0; i < 5; i++)
-            if (!NowMap.isClear)
+
+        UIManager.Instance.OffMovePoint();
+
+        if (NowMap.isClear)
+        {
+            UIManager.Instance.OnMovePoint();
+            if (NowMap.isGoboss)
+                UIManager.Instance.OnBossPoint();
+        }
+        else
+        {
+            for (int i = 0; i < 5; i++)
                 NowMap.Enemy[i].SetActive(true);
+        }
     }
 }
