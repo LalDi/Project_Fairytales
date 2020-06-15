@@ -1,0 +1,5 @@
+sceneSetups:
+- path: Assets/03_Ingame/Scenes/03_Stage1.unity
+  isLoaded: 1
+  isActive: 1
+  isSubScene: 0
