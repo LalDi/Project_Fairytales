@@ -6,9 +6,9 @@ public class EnemyScript2 : Enemy
 {
     private void Start()
     {
-        base.Init();
-        hp = 50;
         attackDelay = 4;
+        hp = 50;
+        base.Init();
     }
 
     public override void AttackPattern()

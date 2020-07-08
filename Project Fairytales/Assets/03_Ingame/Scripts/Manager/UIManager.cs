@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class UIManager : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class UIManager : MonoBehaviour
     #endregion
 
     public GameObject Pause;
+    public Image BlackScreen;
     public Image[] HpIcon = new Image[5];
     public Sprite[] HpSprite = new Sprite[2];
     public Text HpText;
@@ -28,7 +30,12 @@ public class UIManager : MonoBehaviour
     public Button[] MovePoint = new Button[4]; // Left, Top, Right, Bottom
     public Button BossMovePoint;
 
+    public delegate void ChangeMap();
 
+    public static event ChangeMap ChangeMapEvent;
+
+
+    // 인게임 버튼
     public void ClickPause()
     {
         if (!Pause.activeSelf)
@@ -59,6 +66,23 @@ public class UIManager : MonoBehaviour
 
     }
 
+    public void ClickMovePoint(int num)
+    {
+        GameStageManager.Direction direction = 0;
+        direction += num;
+
+        StartCoroutine(BlackScreenDelay(direction));
+    }
+
+    IEnumerator BlackScreenDelay(GameStageManager.Direction direction)
+    {
+        OnBlackScreen();
+        GameStageManager.Instance.ChangeMap(direction);
+        yield return new WaitForSeconds(0.5f);
+        OffBlackScreen();
+    }
+
+    // UI 기능
     public void SetHpIcon(int MaxHp, int Hp)
     {
         MaxHp--; Hp--;
@@ -134,11 +158,17 @@ public class UIManager : MonoBehaviour
         BossMovePoint.gameObject.SetActive(true);
     }
 
-    public void ClickMovePoint(int num)
-    {
-        GameStageManager.Direction direction = 0;
-        direction += num;
 
-        GameStageManager.Instance.ChangeMap(direction);
+    void OnBlackScreen()
+    {
+        Time.timeScale = 0;
+        BlackScreen.DOFillAmount(1, 0.5f).SetEase(Ease.Unset);
     }
+
+    void OffBlackScreen()
+    {
+        BlackScreen.DOFillAmount(0, 0.5f).SetEase(Ease.Unset);
+        Time.timeScale = 1;
+    }
+
 }

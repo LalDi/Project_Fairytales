@@ -76,7 +76,7 @@ public class PlayerScript : CharacterScript
 
     void FixedUpdate()
     {
-        if (Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())//Input.GetTouch(0).fingerId
+        if (Input.GetMouseButton(0)/* && !EventSystem.current.IsPointerOverGameObject()*/)//Input.GetTouch(0).fingerId
         {
             //clickVec = Input.mousePosition;
             //clickVec = camera.ScreenToWorldPoint(clickVec);
